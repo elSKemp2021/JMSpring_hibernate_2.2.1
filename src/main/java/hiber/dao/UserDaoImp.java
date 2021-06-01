@@ -4,6 +4,7 @@ import hiber.model.Car;
 import hiber.model.User;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,29 +19,29 @@ public class UserDaoImp implements UserDao {
 
    @Override
    public void add(User user) {
-      sessionFactory.getCurrentSession().save(user);
+       sessionFactory.getCurrentSession().save(user);
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public List<User> listUsers() {
-      TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
-      return query.getResultList();
+       TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
+       return query.getResultList();
    }
 
    @Override
    public User getUserByCar(Car car) {
-      try {
-         String name = car.getName();
-         int series = car.getSeries();
-         TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("FROM User WHERE car.name =:n AND car.series =:s")
+       try {
+           String model = car.getName();
+            int series = car.getSeries();
+            Query query = sessionFactory.getCurrentSession().createQuery("FROM User WHERE car.model =:n AND car.series =:s")
                  .setParameter("n", car.getName())
                  .setParameter("s", car.getSeries());
-         return query.getResultList().get(0);
-      } catch (HibernateException e) {
+            return (User) query.getResultList().get(0);
+       } catch (HibernateException e) {
          e.printStackTrace();
-      }
-      return null;
+       }
+       return null;
    }
 
 }
